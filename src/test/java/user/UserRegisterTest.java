@@ -17,7 +17,7 @@ public class UserRegisterTest extends Setup {
     private static final String REQUIRED_403 = "Email, password and name are required fields";
 
     @Before
-    public void setUp() {
+    public void setup() {
         userClient = new UserClient();
     }
 

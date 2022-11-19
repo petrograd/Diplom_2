@@ -14,7 +14,7 @@ public class UserLoginTest extends Setup {
     private static final String INCORRECT_202 = "email or password are incorrect";
 
     @Before
-    public void setUp() {
+    public void setup() {
         registerTestUser();
     }
 
