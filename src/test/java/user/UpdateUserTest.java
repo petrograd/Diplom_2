@@ -1,6 +1,7 @@
 package user;
 
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,15 +11,15 @@ import setup.Setup;
 import static org.hamcrest.Matchers.is;
 
 @DisplayName("Изменение данных пользователя")
-public class UserUpdateTest extends Setup {
+public class UpdateUserTest extends Setup {
 
-    private User userUpdData;
     private String accessToken;
-    private static final String AUTHORIZED_401 = "You should be authorised";
+    private User userData;
+    private static final String AUTHORIZED_ERROR_401 = "You should be authorised";
 
     @Before
     public void setUp() {
-        registerTestUser();
+        createTestUser();
         accessToken = userClient.getAccessToken(user);
     }
 
@@ -26,11 +27,11 @@ public class UserUpdateTest extends Setup {
     @DisplayName("Можно изменить name, email пользователя с авторизацией по токену")
     public void shouldUpdateUserData() {
         expStatusCode = 200;
-        userUpdData = User.createUserWithoutPassword();
-        String expEmail = userUpdData.getEmail().toLowerCase();
-        String expName = userUpdData.getName();
-        userClient.update(userUpdData, accessToken)
-                .then()
+        userData = User.createUserWithoutPassword();
+        String expName = userData.getName();
+        String expEmail = userData.getEmail().toLowerCase();
+        Response response = userClient.updateData(userData, accessToken);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
@@ -41,36 +42,35 @@ public class UserUpdateTest extends Setup {
 
     @Test
     @DisplayName("Можно изменить password пользователя с авторизацией по токену")
-    public void shouldUpdatePassword() {
+    public void shouldUpdateUserPassword() {
         expStatusCode = 200;
         user.setPassword(User.generateRandomString());
-        userClient.update(user, accessToken)
-                .then()
+        Response response = userClient.updateData(user, accessToken);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
                 .body("success", is(true));
-        userClient.login(user)
-                .then()
+        response = userClient.login(user);
+        response.then()
                 .statusCode(200);
         accessToken = userClient.getAccessToken(user);
     }
 
     @Test
-    @DisplayName("Нельзя изменить данные пользователя без авторизации")
+    @DisplayName("Нельзя без авторизации менять данные пользователя")
     public void shouldNotUpdateWithoutAuth() {
         expStatusCode = 401;
-        userClient.updateWithoutAuth(user)
-                .then()
+        Response response = userClient.updateWithoutAuth(user);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
-                .body("message", is(AUTHORIZED_401));
-
+                .body("message", is(AUTHORIZED_ERROR_401));
     }
 
     @After
-    public void deleteData() {
+    public void tearDown() {
         deleteUser();
     }
 }

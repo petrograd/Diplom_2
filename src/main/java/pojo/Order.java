@@ -1,13 +1,10 @@
 package pojo;
 
-import io.qameta.allure.Step;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Order {
-
     public List<String> ingredients;
 
     public Order() {
@@ -17,6 +14,13 @@ public class Order {
         this.ingredients = ingredients;
     }
 
+    public static Order getOrderWithHashAdded(String hash) {
+        Order order = new Order();
+        order.ingredients = new ArrayList<>();
+        order.ingredients.add(hash);
+        return order;
+    }
+
     public static Order getRandomOrder(List<String> availableIngr, int quantity) {
         Order order = new Order();
         order.ingredients = new ArrayList<>();
@@ -24,13 +28,6 @@ public class Order {
         for (int i = 0; i < quantity; i++) {
             order.ingredients.add(availableIngr.get(random.nextInt(availableIngr.size())));
         }
-        return order;
-    }
-
-    public static Order getOrderWithHashAdded(String hash) {
-        Order order = new Order();
-        order.ingredients = new ArrayList<>();
-        order.ingredients.add(hash);
         return order;
     }
 

@@ -4,7 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import pojo.Order;
 
-public class OrderClient extends BaseClient {
+public class OrderClient extends BasicClient {
 
     @Step("Заказ без авторизации")
     public Response createWithoutAuth(Order order) {
@@ -44,12 +44,11 @@ public class OrderClient extends BaseClient {
         return response;
     }
 
-    public Response getWithoutAuth() {
+    public Response getOrdersWithoutAuth() {
         Response response = getSpec()
                 .when()
                 .get(ORDERS);
         return response;
     }
-
 
 }

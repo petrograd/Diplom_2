@@ -1,31 +1,29 @@
-/*Получение заказов конкретного пользователя:
-авторизованный пользователь,
-неавторизованный пользователь.*/
-
 package order;
 
-import client.OrderClient;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Test;
+
 import setup.Setup;
+import client.OrderClient;
 
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Получение заказов конкретного пользователя")
 public class OrderGetTest extends Setup {
 
-    private static final String UNAUTHORIZED_401 = "You should be authorised";
+    private static final String UNAUTHORIZED_USER_401 = "You should be authorised";
 
     @Test
     @DisplayName("Получение заказов пользователя с авторизацией")
-    public void shouldGetWithAuth() {
-        registerTestUser();
+    public void shouldGetOrdersWithAuth() {
+        createTestUser();
         accessToken = userClient.getAccessToken(user);
         setupOrder(accessToken);
         expStatusCode = 200;
-        orderClient.getWithAuth(accessToken)
-                .then()
+        Response response = orderClient.getWithAuth(accessToken);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
@@ -33,20 +31,20 @@ public class OrderGetTest extends Setup {
     }
 
     @Test
-    @DisplayName("Получение заказов пользователя без авторизации")
+    @DisplayName("Нельзя получить заказы пользователя без авторизации")
     public void shouldNotGetWithoutAuth() {
         expStatusCode = 401;
         orderClient = new OrderClient();
-        orderClient.getWithoutAuth()
-                .then()
+        Response response = orderClient.getOrdersWithoutAuth();
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
-                .body("message", is(UNAUTHORIZED_401));
+                .body("message", is(UNAUTHORIZED_USER_401));
     }
 
     @After
-    public void deleteData() {
+    public void tearDown() {
         deleteUser();
         order = null;
     }

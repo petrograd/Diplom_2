@@ -1,6 +1,7 @@
 package user;
 
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,20 +11,20 @@ import setup.Setup;
 import static org.hamcrest.Matchers.is;
 
 @DisplayName("Логин пользователя")
-public class UserLoginTest extends Setup {
-    private static final String INCORRECT_202 = "email or password are incorrect";
+public class LoginUserTest extends Setup {
+    private static final String FIELDS_INCORRECT_202 = "email or password are incorrect";
 
     @Before
-    public void setup() {
-        registerTestUser();
+    public void setUp() {
+        createTestUser();
     }
 
     @Test
-    @DisplayName("Можно залогиниться существующим пользователем")
-    public void shouldLoginValidUser() {
+    @DisplayName("Логин под существующим пользователем")
+    public void shouldLoginExistingUser() {
         expStatusCode = 200;
-        userClient.login(user)
-                .then()
+        Response response = userClient.login(user);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
@@ -32,21 +33,21 @@ public class UserLoginTest extends Setup {
     }
 
     @Test
-    @DisplayName("Нельзя залогиниться с неверным логином и паролем")
+    @DisplayName("Логин с неверным логином и паролем")
     public void shouldNotLoginIncorrectCredentials() {
         expStatusCode = 401;
         accessToken = userClient.getAccessToken(user);
         user.setPassword(User.generateRandomString());
-        userClient.login(user)
-                .then()
+        Response response = userClient.login(user);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
-                .body("message", is(INCORRECT_202));
+                .body("message", is(FIELDS_INCORRECT_202));
     }
 
     @After
-    public void deleteData() {
+    public void tearDown() {
         deleteUser();
         }
 

@@ -7,9 +7,11 @@ import java.util.List;
 
 public class Ingredients {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private Boolean success;
-    @Getter @Setter
+    @Getter
+    @Setter
     private List<IngredientData> data;
 
     public Ingredients() {

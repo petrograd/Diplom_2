@@ -1,11 +1,11 @@
 package client;
 
-import config.Config;
 import io.restassured.specification.RequestSpecification;
 
+import config.Config;
 import static io.restassured.RestAssured.given;
 
-public class BaseClient extends Config {
+public class BasicClient extends Config {
 
     protected RequestSpecification getSpec() {
         return given().log().all()

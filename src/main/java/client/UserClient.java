@@ -3,9 +3,9 @@ package client;
 import io.restassured.response.Response;
 import pojo.User;
 
-import static pojo.User.loginData;
+import static pojo.User.getUserLoginData;
 
-public class UserClient extends BaseClient {
+public class UserClient extends BasicClient {
 
     private String accessToken;
 
@@ -18,37 +18,21 @@ public class UserClient extends BaseClient {
         return response;
     }
 
-
     public Response login(User user) {
         Response response = getSpec()
                 .and()
-                .body(loginData(user))
+                .body(getUserLoginData(user))
                 .when()
                 .post(LOGIN);
         return response;
     }
 
-
     public String getAccessToken(User user) {
-        return login(user)
+        String token = login(user)
                 .then()
                 .extract()
                 .path("accessToken");
-    }
-
-    public Response delete(User user) {
-        accessToken = getAccessToken(user);
-        return getSpec()
-                .header("Authorization", accessToken)
-                .when()
-                .delete(USER);
-    }
-
-    public Response delete(String accessToken) {
-        return getSpec()
-                .header("Authorization", accessToken)
-                .when()
-                .delete(USER);
+        return token;
     }
 
     public Response updateWithoutAuth(User user) {
@@ -60,7 +44,7 @@ public class UserClient extends BaseClient {
         return response;
     }
 
-    public Response update(User user, String accessToken) {
+    public Response updateData(User user, String accessToken) {
         Response response = getSpec()
                 .header("Authorization", accessToken)
                 .and()
@@ -70,5 +54,21 @@ public class UserClient extends BaseClient {
         return response;
     }
 
+    public Response delete(String accessToken) {
+        Response response =  getSpec()
+                .header("Authorization", accessToken)
+                .when()
+                .delete(USER);
+        return response;
+    }
+
+    public Response delete(User user) {
+        accessToken = getAccessToken(user);
+        Response response =  getSpec()
+                .header("Authorization", accessToken)
+                .when()
+                .delete(USER);
+        return response;
+    }
 
 }

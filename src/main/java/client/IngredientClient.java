@@ -7,9 +7,7 @@ import pojo.Ingredients;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientClient extends BaseClient {
-
-
+public class IngredientClient extends BasicClient {
     @Step("Получение доступных id ингредиентов")
     public List<String> getIngredients() {
         List<String> indgredientIds = new ArrayList<>();

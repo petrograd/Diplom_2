@@ -1,37 +1,39 @@
 package order;
 
-import client.IngredientClient;
-import client.OrderClient;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pojo.Order;
+
 import setup.Setup;
+import client.IngredientClient;
+import client.OrderClient;
 
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Создание заказа")
 public class OrderCreateTest extends Setup {
+    private static final String INCORRECT_ID_400 = "One or more ids provided are incorrect";
     private static final String NO_ID_400 = "Ingredient ids must be provided";
-    private static final String WRONG_ID_400 = "One or more ids provided are incorrect";
-    private String hash;
+    private String hashCode;
 
     @Before
     public void setup() {
-        ingrClient = new IngredientClient();
         orderClient = new OrderClient();
+        ingrClient = new IngredientClient();
         order = Order.getRandomOrder(ingrClient.getIngredients(), 3);
     }
 
     @Test
-    @DisplayName("Создание заказа с авторизацией, с ингредиентами")
-    public void shouldOrderWithAuth() {
-        registerTestUser();
+    @DisplayName("Создание заказа с авторизацией и ингредиентами")
+    public void shouldCreateOrderWithAuth() {
+        createTestUser();
         accessToken = userClient.getAccessToken(user);
         expStatusCode = 200;
-        orderClient.createWithAuth(accessToken, order)
-                .then()
+        Response response = orderClient.createWithAuth(accessToken, order);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
@@ -41,60 +43,59 @@ public class OrderCreateTest extends Setup {
     }
 
     @Test
-    @DisplayName("Создание заказа без авторизации, с ингредиентами")
-    public void shouldOrderWithoutAuth() {
+    @DisplayName("Создание заказа без авторизации с ингредиентами")
+    public void shouldCreateOrderWithoutAuth() {
         expStatusCode = 200;
-        orderClient.createWithoutAuth(order)
-                .then()
+        Response response = orderClient.createWithoutAuth(order);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
-                .body("success", is(true))
+                .body("order.number", notNullValue())
                 .and()
-                .body("order.number", notNullValue());
+                .body("success", is(true));
     }
 
     @Test
-    @DisplayName("Создание заказа без ингредиентов")
-    public void shouldNotOrderWithoutIngr() {
+    @DisplayName("Не создать заказ с невалидным форматом хеша ингредиентов")
+    public void shouldNotCreateWithWrongHash() {
+        expStatusCode = 500;
+        hashCode = "abcde";
+        order = Order.getOrderWithHashAdded(hashCode);
+        Response response = orderClient.createWithoutAuth(order);
+        response.then()
+                .assertThat()
+                .statusCode(expStatusCode);
+    }
+    @Test
+    @DisplayName("Не создать заказь без ингредиентов")
+    public void shouldNotСreateOrderWithoutIngr() {
         expStatusCode = 400;
-        orderClient.createWithoutIngr()
-                .then()
+        Response response = orderClient.createWithoutIngr();
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
                 .body("message", is(NO_ID_400));
     }
-
     @Test
-    @DisplayName("Создание заказа с невалидным хешем ингредиентов")
-    public void shouldNotCreateWithInvalidHash() {
+    @DisplayName("Нельзя создать заказ с невалидным хешем ингредиентов")
+    public void shouldNotCreateOrderWithInvalidHash() {
         expStatusCode = 400;
-        hash = "000000000000000000000000";
-        order = Order.getOrderWithHashAdded(hash);
-        orderClient.createWithoutAuth(order)
-                .then()
+        hashCode = "000000000000000000000000";
+        order = Order.getOrderWithHashAdded(hashCode);
+        Response response = orderClient.createWithoutAuth(order);
+        response.then()
                 .assertThat()
                 .statusCode(expStatusCode)
                 .and()
-                .body("message", is(WRONG_ID_400));
+                .body("message", is(INCORRECT_ID_400));
     }
 
-    @Test
-    @DisplayName("Создание заказа с неверным форматом хеша ингредиентов")
-    public void shouldNotCreateWithWrongHash() {
-        expStatusCode = 500;
-        hash = "abcde";
-        order = Order.getOrderWithHashAdded(hash);
-        orderClient.createWithoutAuth(order)
-                .then()
-                .assertThat()
-                .statusCode(expStatusCode);
-    }
 
     @After
-    public void deleteData() {
-        //документация не описывает способа удаления тестового заказа из базы
+    public void tearDown() {
+        // В документации нет описания способа удаления тестового заказа из базы
         order = null;
     }
 
