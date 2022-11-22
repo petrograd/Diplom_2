@@ -6,17 +6,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IngredientData {
+public class IngredientID {
 
     @Getter
     @Setter
     @JsonProperty("_id")
     private String id;
 
-    public IngredientData() {
+    public IngredientID() {
     }
 
-    public IngredientData(String id) {
+    public IngredientID(String id) {
         this.id = id;
     }
 

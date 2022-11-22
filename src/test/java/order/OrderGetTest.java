@@ -5,13 +5,12 @@ import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Test;
 
-import setup.Setup;
 import client.OrderClient;
 
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Получение заказов конкретного пользователя")
-public class OrderGetTest extends Setup {
+public class OrderGetTest extends SetupOrder {
 
     private static final String UNAUTHORIZED_USER_401 = "You should be authorised";
 

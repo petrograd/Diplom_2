@@ -1,21 +1,18 @@
-package setup;
-
-import io.restassured.response.Response;
-import lombok.SneakyThrows;
+package user;
 
 import client.IngredientClient;
 import client.OrderClient;
 import client.UserClient;
+import io.restassured.response.Response;
+import lombok.SneakyThrows;
 import pojo.Order;
 import pojo.User;
 
-public class Setup {
+public class SetupUser {
     protected static UserClient userClient;
     protected static User user;
     protected static String accessToken;
-    protected OrderClient orderClient;
-    protected IngredientClient ingrClient;
-    protected Order order;
+
     protected int expStatusCode;
 
     @SneakyThrows
@@ -28,16 +25,7 @@ public class Setup {
         Thread.sleep(2000); //из-за ошибки 429 - Too Many Requests
     }
 
-    public void setupOrder(String accessToken) {
-        ingrClient = new IngredientClient();
-        order = Order.getRandomOrder(ingrClient.getIngredients(), 3);
-        orderClient = new OrderClient();
-        Response response = orderClient.createWithAuth(accessToken, order);
-        response.then()
-                .statusCode(200);
-    }
-
-    public void deleteUser() {
+     public void deleteUser() {
         if (accessToken != null) {
             Response response = userClient.delete(accessToken);
             response.then()

@@ -1,6 +1,6 @@
-package config;
+package client;
 
-public class Config {
+public class EndPointURLs {
 
     protected static final String BASE_URL = "https://stellarburgers.nomoreparties.site/api";
     protected static final String REGISTER = "/auth/register";

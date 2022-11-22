@@ -6,12 +6,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pojo.User;
-import setup.Setup;
 
 import static org.hamcrest.Matchers.is;
 
 @DisplayName("Логин пользователя")
-public class LoginUserTest extends Setup {
+public class LoginUserTest extends SetupUser {
     private static final String FIELDS_INCORRECT_202 = "email or password are incorrect";
 
     @Before

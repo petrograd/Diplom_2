@@ -6,12 +6,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pojo.User;
-import setup.Setup;
 
 import static org.hamcrest.Matchers.is;
 
 @DisplayName("Изменение данных пользователя")
-public class UpdateUserTest extends Setup {
+public class UpdateUserTest extends SetupUser {
 
     private String accessToken;
     private User userData;

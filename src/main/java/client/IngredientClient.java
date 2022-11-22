@@ -1,7 +1,7 @@
 package client;
 
 import io.qameta.allure.Step;
-import pojo.IngredientData;
+import pojo.IngredientID;
 import pojo.Ingredients;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class IngredientClient extends BasicClient {
                 .get(INGREDIENTS)
                 .body()
                 .as(Ingredients.class);
-        for (IngredientData data : ingr.getData())
+        for (IngredientID data : ingr.getData())
             indgredientIds.add(data.getId());
         return indgredientIds;
     }

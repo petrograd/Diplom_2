@@ -12,12 +12,12 @@ public class Ingredients {
     private Boolean success;
     @Getter
     @Setter
-    private List<IngredientData> data;
+    private List<IngredientID> data;
 
     public Ingredients() {
     }
 
-    public Ingredients(Boolean success, List<IngredientData> data) {
+    public Ingredients(Boolean success, List<IngredientID> data) {
         this.success = success;
         this.data = data;
     }

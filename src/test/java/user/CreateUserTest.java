@@ -3,16 +3,16 @@ package user;
 import client.UserClient;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import lombok.SneakyThrows;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pojo.User;
-import setup.Setup;
 
 import static org.hamcrest.Matchers.is;
 
 @DisplayName("Создание пользователя")
-public class CreateUserTest extends Setup {
+public class CreateUserTest extends SetupUser {
 
     private static final String USER_EXISTS_403 = "User already exists";
     private static final String FIELDS_REQUIRED_403 = "Email, password and name are required fields";
@@ -62,6 +62,7 @@ public class CreateUserTest extends Setup {
                 .body("message", is(FIELDS_REQUIRED_403));
     }
 
+    @SneakyThrows
     @Test
     @DisplayName("Нельзя создать пользователя, который уже зарегистрирован")
     public void shouldNotCreateExistingUser() {

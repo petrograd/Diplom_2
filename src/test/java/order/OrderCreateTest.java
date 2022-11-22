@@ -7,14 +7,13 @@ import org.junit.Before;
 import org.junit.Test;
 import pojo.Order;
 
-import setup.Setup;
 import client.IngredientClient;
 import client.OrderClient;
 
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Создание заказа")
-public class OrderCreateTest extends Setup {
+public class OrderCreateTest extends SetupOrder {
     private static final String INCORRECT_ID_400 = "One or more ids provided are incorrect";
     private static final String NO_ID_400 = "Ingredient ids must be provided";
     private String hashCode;
