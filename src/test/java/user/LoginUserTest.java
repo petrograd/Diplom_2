@@ -48,6 +48,6 @@ public class LoginUserTest extends SetupUser {
     @After
     public void tearDown() {
         deleteUser();
-        }
+    }
 
 }

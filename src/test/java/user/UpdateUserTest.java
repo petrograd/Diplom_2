@@ -12,9 +12,9 @@ import static org.hamcrest.Matchers.is;
 @DisplayName("Изменение данных пользователя")
 public class UpdateUserTest extends SetupUser {
 
+    private static final String AUTHORIZED_ERROR_401 = "You should be authorised";
     private String accessToken;
     private User userData;
-    private static final String AUTHORIZED_ERROR_401 = "You should be authorised";
 
     @Before
     public void setUp() {

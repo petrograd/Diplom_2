@@ -66,6 +66,7 @@ public class OrderCreateTest extends SetupOrder {
                 .assertThat()
                 .statusCode(expStatusCode);
     }
+
     @Test
     @DisplayName("Не создать заказь без ингредиентов")
     public void shouldNotСreateOrderWithoutIngr() {
@@ -77,6 +78,7 @@ public class OrderCreateTest extends SetupOrder {
                 .and()
                 .body("message", is(NO_ID_400));
     }
+
     @Test
     @DisplayName("Нельзя создать заказ с невалидным хешем ингредиентов")
     public void shouldNotCreateOrderWithInvalidHash() {
@@ -91,12 +93,10 @@ public class OrderCreateTest extends SetupOrder {
                 .body("message", is(INCORRECT_ID_400));
     }
 
-
     @After
     public void tearDown() {
         // В документации нет описания способа удаления тестового заказа из базы
         order = null;
     }
-
 
 }
